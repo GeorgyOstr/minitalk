@@ -6,7 +6,7 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 15:46:20 by gostroum          #+#    #+#             */
-/*   Updated: 2025/09/21 16:57:32 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/09/21 20:52:45 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 typedef struct s_data
 {
-	int				c;
-	unsigned char	data;
+	volatile sig_atomic_t	c;
+	volatile sig_atomic_t	data;
 }	t_data;
 
 #endif

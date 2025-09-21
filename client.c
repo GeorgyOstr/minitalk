@@ -6,7 +6,7 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 13:44:34 by gostroum          #+#    #+#             */
-/*   Updated: 2025/09/21 20:17:39 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/09/21 21:38:18 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,18 @@
 
 void	sendbit(int pid, unsigned char a)
 {
+	int	res;
+
 	if ((a & 1) == 1)
-		kill(pid, SIGUSR1);
+		res = kill(pid, SIGUSR1);
 	else
-		kill(pid, SIGUSR2);
+		res = kill(pid, SIGUSR2);
 	usleep(100);
+	if (res == -1)
+	{
+
+		exit (200);
+	}
 }
 
 void	sendchar(int pid, unsigned char a)
