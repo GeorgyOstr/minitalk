@@ -6,7 +6,7 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 14:02:31 by gostroum          #+#    #+#             */
-/*   Updated: 2025/09/21 18:26:35 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/09/21 20:28:17 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,17 @@ void	ft_putchar(char c)
 int	main(void)
 {
 	const long	t = getpid();
-	int			i;
 
 	g_val.c = 0;
 	g_val.data = 0;
 	printf("%ld\n", t);
+//	log_fd = open("log");
+//	dprintf(log_fd, "%lu\n", t);
+//	close(log_fd);
 	signal(SIGUSR1, handler);
 	signal(SIGUSR2, handler);
-	i = 0;
 	while (1)
 	{
-		i++;
 		pause();
 		if (g_val.c == CHAR_BIT)
 		{
