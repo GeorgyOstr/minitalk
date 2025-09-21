@@ -6,7 +6,7 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 15:46:20 by gostroum          #+#    #+#             */
-/*   Updated: 2025/09/21 15:47:18 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/09/21 16:57:32 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 typedef struct s_data
 {
-	int		c;
-	char	data;
+	int				c;
+	unsigned char	data;
 }	t_data;
 
 #endif

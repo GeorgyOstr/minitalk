@@ -6,7 +6,7 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 13:44:34 by gostroum          #+#    #+#             */
-/*   Updated: 2025/09/21 15:42:37 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/09/21 17:18:25 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,7 @@
 #include <string.h>
 #include <unistd.h>
 
-// 11 = 1; 22 = 0; 12 = end; 21 = error
-void	sendbit(int pid, char a)
+void	sendbit(int pid, unsigned char a)
 {
 	if ((a & 1) == 1)
 		kill(pid, SIGUSR1);
@@ -26,7 +25,7 @@ void	sendbit(int pid, char a)
 	usleep(100);
 }
 
-void	sendchar(int pid, char a)
+void	sendchar(int pid, unsigned char a)
 {
 	int	i;
 
@@ -48,6 +47,6 @@ int	main(int argc, char **argv)
 		return (0);
 	len = strlen(argv[2]);
 	i = 0;
-	sendchar(atoi(argv[1]), 25);
+	sendchar(atoi(argv[1]), atoi(argv[2]));
 	return (0);
 }

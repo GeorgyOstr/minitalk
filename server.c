@@ -6,7 +6,7 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 14:02:31 by gostroum          #+#    #+#             */
-/*   Updated: 2025/09/21 15:47:46 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/09/21 17:18:23 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	handler(int signal)
 	printf("Income signal: SIGUSR%d  \n", 2 - (signal == SIGUSR1));
 	g_val.c += 1;
 	g_val.data <<= 1;
-	g_val.data |= (signal == SIGUSR1);
+	g_val.data |= (unsigned char)(signal == SIGUSR1);
 }
 
 int	main(void)
