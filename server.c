@@ -6,12 +6,14 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 14:02:31 by gostroum          #+#    #+#             */
-/*   Updated: 2025/09/28 14:24:57 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/09/28 16:07:49 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
 #include <sys/types.h>
+#include <sys/types.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -64,13 +66,14 @@ int	main(void)
 	int			pid_client;
 	int			pid_client1;
 	int			i;
+	int			log_fd;
 
 	g_val.c = 0;
 	g_val.data = 0;
 	printf("%d\n", pid);
-//	log_fd = open("log");
-//	dprintf(log_fd, "%lu\n", t);
-//	close(log_fd);
+	log_fd = open("log", O_RDWR|O_CREAT, 0664);
+	dprintf(log_fd, "%d\n", pid);
+	close(log_fd);
 	signal(SIGUSR1, handler);
 	signal(SIGUSR2, handler);
 	pid_client = 0;
