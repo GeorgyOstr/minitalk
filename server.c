@@ -6,7 +6,7 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 14:02:31 by gostroum          #+#    #+#             */
-/*   Updated: 2025/09/21 22:03:26 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/09/28 23:04:18 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,15 @@
 #include <limits.h>
 #include "minitalk.h"
 
-volatile t_data		g_val;
-volatile sig_atomic_t	g_signal;
-
-void	handler(int signal)
+void	action(int sig, siginfo_t *info, void *context)
 {
-	g_val.c += 1;
-	g_val.data >>= 1;
-	g_val.data |= (signal == SIGUSR1) << 7;
-}
+	int pid = info->si_pid;
 
-void 	handl(int signal)
-{
-	g_signal = signal;
+	(void) context;	
+	
+	if (sig == SIGUSR1)
+		sendsignal()
+	info->si_pid;
 }
 
 void	ft_putchar(char c)
@@ -38,23 +34,20 @@ void	ft_putchar(char c)
 	write(1, &c, 1);
 }
 
-#include <assert.h>
-
 int	main(void)
 {
-	const long	t = getpid();
+	const int			pid = getpid();
+	int					log_fd;
+	struct sigaction	sa;
 
-	g_val.c = 0;
-	g_val.data = 0;
-	printf("%ld\n", t);
-//	log_fd = open("log");
-//	dprintf(log_fd, "%lu\n", t);
-//	close(log_fd);
-	//signal(SIGUSR1, handler);
-	struct sigaction sa;
-	sa.sa_handler = handl;
+	printf("%d\n", pid);
+	log_fd = open("log");
+	dprintf(log_fd, "%d\n", pid);
+	close(log_fd);
+	
+	sa.sa_flags = SA_RESTART | SA_SIGINFO;
+	sa.sa_action = action;
 	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = SA_RESTART;
 
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGUSR2, &sa, NULL);
@@ -65,7 +58,6 @@ int	main(void)
 		g_val.c += 1;
 		g_val.data >>= 1;
 		g_val.data |= (g_signal == SIGUSR1) << 7;
-		assert(g_val.c <= CHAR_BIT);
 		if (g_val.c == CHAR_BIT)
 		{
 			if (g_val.data == 0)
