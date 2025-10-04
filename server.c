@@ -39,7 +39,9 @@ void    action(int sig, siginfo_t *info, void *context)
         uchar = 0;
     }
     (void) context;    
-    if (info->si_pid > 0 && kill(info->si_pid, SIGUSR1) == -1)
+    if (info->si_pid <= 0)
+        return ;
+    if (kill(info->si_pid, SIGUSR1) == -1)
         exit (127);
 }
 
