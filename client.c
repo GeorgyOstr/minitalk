@@ -30,9 +30,8 @@ void    sendbit(int pid, unsigned char a)
         res = kill(pid, SIGUSR2);
     if (res == -1)
         exit (200);
-    if (!ack_received)
+    while (!ack_received)
             pause();
-
 }
 
 void    sendchar(int pid, unsigned char a)
