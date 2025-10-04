@@ -42,7 +42,6 @@ void    sendchar(int pid, unsigned char a)
     while (i < CHAR_BIT)
     {
         sendbit(pid, a & 1);
-        //printf("done");
         i++;
         a >>= 1;
     }

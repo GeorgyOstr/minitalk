@@ -26,22 +26,33 @@ void    ft_putchar(char c)
 
 void    action(int sig, siginfo_t *info, void *context)
 {
+    static volatile sig_atomic_t pid = -1;
     static volatile sig_atomic_t bitnum = 0;
     static volatile sig_atomic_t uchar = 0;
 
+    if (pid == -1)
+        pid = info->si_pid;
+    if (pid != info->si_pid || pid <= 0)
+        exit(127);
     bitnum++;
     uchar >>= 1;
     uchar |= 128 * (sig == SIGUSR1);
     if (bitnum == 8)
     {
-        ft_putchar((char) uchar);
+        if (uchar == 0)
+	{
+	    if (kill(pid, SIGUSR1) == -1)
+        	exit (127);
+            pid = -1;
+	}
+	ft_putchar((char) uchar);
         bitnum = 0;
         uchar = 0;
     }
     (void) context;    
-    if (info->si_pid <= 0)
-        return ;
-    if (kill(info->si_pid, SIGUSR1) == -1)
+    if (pid <= 0)
+	    return ;
+    if (kill(pid, SIGUSR1) == -1)
         exit (127);
 }
 
