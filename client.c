@@ -17,55 +17,70 @@
 #include <unistd.h>
 #include <limits.h>
 
-void	sendbit(int pid, unsigned char a)
+volatile sig_atomic_t ack_received = 0;
+
+void    sendbit(int pid, unsigned char a)
 {
-	int	res;
+    int    res;
 
-	if ((a & 1) == 1)
-		res = kill(pid, SIGUSR1);
-	else
-		res = kill(pid, SIGUSR2);
-	usleep(100);
-	if (res == -1)
-	{
+    ack_received = 0;
+    if ((a & 1) == 1)
+        res = kill(pid, SIGUSR1);
+    else
+        res = kill(pid, SIGUSR2);
+    if (res == -1)
+        exit (200);
+    if (!ack_received)
+            pause();
 
-		exit (200);
-	}
 }
 
-void	sendchar(int pid, unsigned char a)
+void    sendchar(int pid, unsigned char a)
 {
-	int	i;
+    int    i;
 
-	i = 0;
-	while (i < CHAR_BIT)
-	{
-		sendbit(pid, a & 1);
-		i++;
-		a >>= 1;
-	}
+    i = 0;
+    while (i < CHAR_BIT)
+    {
+        sendbit(pid, a & 1);
+        //printf("done");
+        i++;
+        a >>= 1;
+    }
 }
 
-void	sendstr(int pid, char *str)
+void    sendstr(int pid, char *str)
 {
-	int		i;
+    int        i;
 
-	i = 0;
-	while (str[i] != 0)
-	{
-		sendchar(pid, (unsigned char)str[i]);
-		i++;
-	}
-	sendchar(pid, 0);
+    i = 0;
+    while (str[i] != 0)
+    {
+        sendchar(pid, (unsigned char)str[i]);
+        i++;
+    }
+    sendchar(pid, 0);
 }
 
-int	main(int argc, char **argv)
+void    action(int sig, siginfo_t *info, void *context)
 {
-	int		i;
 
-	if (argc != 3)
-		return (0);
-	i = 0;
-	sendstr(atoi(argv[1]), argv[2]);
-	return (0);
+    (void)info;
+    (void)context;
+    ack_received = 1;
+}
+
+int    main(int argc, char **argv)
+{
+    struct sigaction    sa;
+
+    sa.sa_flags = SA_RESTART | SA_SIGINFO;
+    sa.sa_sigaction = action;
+    sigemptyset(&sa.sa_mask);
+    
+    sigaction(SIGUSR1, &sa, NULL);
+    if (argc != 3 || atoi(argv[1]) <= 0)
+        return (0);
+    sendstr(atoi(argv[1]), argv[2]);
+    return (0);
 }
