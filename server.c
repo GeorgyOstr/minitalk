@@ -6,7 +6,7 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 14:02:31 by gostroum          #+#    #+#             */
-/*   Updated: 2025/10/05 12:15:17 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/10/05 12:40:01 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,14 @@ void	action(int sig, siginfo_t *info, void *context)
 
 	if (pid == -1)
 		pid = info->si_pid;
-	if (pid != info->si_pid || pid <= 0)
+	if (pid <= 0)
+		exit (201);
+	if (pid != info->si_pid)
+	{
+		kill(pid, SIGUSR2);
+		kill(info->si_pid, SIGUSR2);
 		exit(127);
+	}
 	bitnum++;
 	uchar >>= 1;
 	uchar |= 128 * (sig == SIGUSR1);
