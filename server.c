@@ -6,7 +6,7 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 14:02:31 by gostroum          #+#    #+#             */
-/*   Updated: 2025/10/05 16:28:12 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/10/05 18:58:49 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,8 @@ int	main(void)
 	sa.sa_flags = SA_RESTART | SA_SIGINFO;
 	sa.sa_sigaction = action;
 	sigemptyset(&sa.sa_mask);
+	sigaddset(&sa.sa_mask, SIGUSR1);
+    sigaddset(&sa.sa_mask, SIGUSR2);
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGUSR2, &sa, NULL);
 	while (1)

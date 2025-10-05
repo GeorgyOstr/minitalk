@@ -6,7 +6,7 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 13:44:34 by gostroum          #+#    #+#             */
-/*   Updated: 2025/10/05 16:29:19 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/10/05 18:53:38 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,10 @@ void	action(int sig, siginfo_t *info, void *context)
 {
 	(void)info;
 	(void)context;
-	if (sig == SIGUSR1)
+	if (sig == SIGUSR1 && g_ack == 0)
 		g_ack = 1;
+	else if (sig == SIGUSR1 && g_ack == 1)
+		exit (205);
 	if (sig == SIGUSR2)
 		exit (201);
 }
@@ -78,6 +80,8 @@ int	main(int argc, char **argv)
 	sa.sa_flags = SA_RESTART | SA_SIGINFO;
 	sa.sa_sigaction = action;
 	sigemptyset(&sa.sa_mask);
+	sigaddset(&sa.sa_mask, SIGUSR1);
+    sigaddset(&sa.sa_mask, SIGUSR2);
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGUSR2, &sa, NULL);
 	if (argc != 3 || atoi(argv[1]) <= 0)
