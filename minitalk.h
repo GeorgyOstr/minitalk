@@ -17,6 +17,6 @@ typedef struct s_data
 {
 	volatile sig_atomic_t	c;
 	volatile sig_atomic_t	data;
-}	t_data;
+}							t_data;
 
 #endif
