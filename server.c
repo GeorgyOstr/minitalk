@@ -6,7 +6,7 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 14:02:31 by gostroum          #+#    #+#             */
-/*   Updated: 2025/10/05 18:58:49 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/10/05 19:38:52 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+volatile sig_atomic_t	g_ack = 0;
 
 void	ft_putchar(char c)
 {
@@ -42,6 +44,7 @@ void	action(int sig, siginfo_t *info, void *context)
 	static volatile sig_atomic_t	bitnum = 0;
 	static volatile sig_atomic_t	uchar = 0;
 
+	g_ack = 1;
 	if (pid == -1)
 		pid = info->si_pid;
 	handle_error(pid, info->si_pid);
@@ -85,6 +88,16 @@ int	main(void)
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGUSR2, &sa, NULL);
 	while (1)
-		pause();
+	{
+		g_ack = 0;
+		size_t	i = 0;
+		while (g_ack == 0 && i < 100000)
+		{
+			usleep(100);
+			i++;
+		}
+	    if (g_ack == 0)
+        	exit(1);
+	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 13:44:34 by gostroum          #+#    #+#             */
-/*   Updated: 2025/10/05 18:53:38 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/10/05 19:39:23 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,24 @@ volatile sig_atomic_t	g_ack = 0;
 
 void	sendbit(int pid, unsigned char a)
 {
-	int	res;
+	int		res;
+	size_t	i;
 
 	g_ack = 0;
+	i = 0;
 	if ((a & 1) == 1)
 		res = kill(pid, SIGUSR1);
 	else
 		res = kill(pid, SIGUSR2);
 	if (res == -1)
 		exit(200);
-	while (!g_ack)
-		pause();
+	while (g_ack == 0)
+	{
+		usleep(100);
+		i++;
+	}
+	if (g_ack == 0)
+		exit(1);
 }
 
 void	sendchar(int pid, unsigned char a)
