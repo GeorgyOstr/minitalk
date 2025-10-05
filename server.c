@@ -6,24 +6,24 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 14:02:31 by gostroum          #+#    #+#             */
-/*   Updated: 2025/10/05 19:38:52 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/10/05 21:59:29 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
-#include <fcntl.h>
-#include <limits.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 volatile sig_atomic_t	g_ack = 0;
 
-void	ft_putchar(char c)
+int	ft_putchar(char c)
 {
-	write(1, &c, 1);
+	int	res;
+
+	res = 0;
+	while (res == 0)
+		res = write(1, &c, 1);
+	if (res < 0)
+		return (-100);
+	return (res);
 }
 
 void	handle_error(volatile sig_atomic_t pid, volatile sig_atomic_t ssi_pid)
@@ -70,13 +70,32 @@ void	action(int sig, siginfo_t *info, void *context)
 		exit(127);
 }
 
+int	ft_putnbr(long n)
+{
+	int	ans;
+
+	ans = 0;
+	if (n == 0)
+		return (ft_putchar('0'));
+	if (n < 0)
+	{
+		ans += ft_putchar('-');
+		n = -n;
+	}
+	if (n >= 10)
+		ans += ft_putnbr(n / 10);
+	ans += ft_putchar(n % 10 + '0');
+	return (ans);
+}
+
 int	main(void)
 {
 	const int			pid = getpid();
-	int					log_fd;
 	struct sigaction	sa;
+	size_t				i;
+	int					log_fd;
 
-	printf("%d\n", pid);
+	ft_putnbr(pid);
 	log_fd = open("log", O_CREAT | O_RDWR, 0644);
 	dprintf(log_fd, "%d\n", pid);
 	close(log_fd);
@@ -84,20 +103,20 @@ int	main(void)
 	sa.sa_sigaction = action;
 	sigemptyset(&sa.sa_mask);
 	sigaddset(&sa.sa_mask, SIGUSR1);
-    sigaddset(&sa.sa_mask, SIGUSR2);
+	sigaddset(&sa.sa_mask, SIGUSR2);
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGUSR2, &sa, NULL);
 	while (1)
 	{
 		g_ack = 0;
-		size_t	i = 0;
+		i = 0;
 		while (g_ack == 0 && i < 100000)
 		{
 			usleep(100);
 			i++;
 		}
-	    if (g_ack == 0)
-        	exit(1);
+		if (g_ack == 0)
+			exit(1);
 	}
 	return (0);
 }

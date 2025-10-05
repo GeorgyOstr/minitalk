@@ -6,17 +6,11 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 13:44:34 by gostroum          #+#    #+#             */
-/*   Updated: 2025/10/05 19:39:23 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/10/05 21:55:25 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
-#include <limits.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 
 volatile sig_atomic_t	g_ack = 0;
 
@@ -47,7 +41,7 @@ void	sendchar(int pid, unsigned char a)
 	int	i;
 
 	i = 0;
-	while (i < CHAR_BIT)
+	while (i < 8)
 	{
 		sendbit(pid, a & 1);
 		i++;
@@ -66,6 +60,11 @@ void	sendstr(int pid, char *str)
 		i++;
 	}
 	sendchar(pid, 0);
+}
+
+void	handler(int sig)
+{
+	(void)sig;
 }
 
 void	action(int sig, siginfo_t *info, void *context)
@@ -88,7 +87,7 @@ int	main(int argc, char **argv)
 	sa.sa_sigaction = action;
 	sigemptyset(&sa.sa_mask);
 	sigaddset(&sa.sa_mask, SIGUSR1);
-    sigaddset(&sa.sa_mask, SIGUSR2);
+	sigaddset(&sa.sa_mask, SIGUSR2);
 	sigaction(SIGUSR1, &sa, NULL);
 	sigaction(SIGUSR2, &sa, NULL);
 	if (argc != 3 || atoi(argv[1]) <= 0)
