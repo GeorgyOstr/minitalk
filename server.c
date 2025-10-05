@@ -6,7 +6,7 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 14:02:31 by gostroum          #+#    #+#             */
-/*   Updated: 2025/10/05 12:40:01 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/10/05 16:28:12 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,18 @@ void	ft_putchar(char c)
 	write(1, &c, 1);
 }
 
+void	handle_error(volatile sig_atomic_t pid, volatile sig_atomic_t ssi_pid)
+{
+	if (pid <= 0)
+		exit (201);
+	if (pid != ssi_pid)
+	{
+		kill(pid, SIGUSR2);
+		kill(ssi_pid, SIGUSR2);
+		exit(127);
+	}
+}
+
 void	action(int sig, siginfo_t *info, void *context)
 {
 	static volatile sig_atomic_t	pid = -1;
@@ -32,14 +44,7 @@ void	action(int sig, siginfo_t *info, void *context)
 
 	if (pid == -1)
 		pid = info->si_pid;
-	if (pid <= 0)
-		exit (201);
-	if (pid != info->si_pid)
-	{
-		kill(pid, SIGUSR2);
-		kill(info->si_pid, SIGUSR2);
-		exit(127);
-	}
+	handle_error(pid, info->si_pid);
 	bitnum++;
 	uchar >>= 1;
 	uchar |= 128 * (sig == SIGUSR1);
