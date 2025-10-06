@@ -6,117 +6,116 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 14:02:31 by gostroum          #+#    #+#             */
-/*   Updated: 2025/10/05 21:59:29 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/10/06 22:52:10 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-volatile sig_atomic_t	g_ack = 0;
+t_sig_atomic_data	g_data = {0};
 
-int	ft_putchar(char c)
+# include <fcntl.h>
+# include <stdio.h>
+
+void logger(pid_t pid)
 {
-	int	res;
+	int	log_fd;
 
-	res = 0;
-	while (res == 0)
-		res = write(1, &c, 1);
-	if (res < 0)
-		return (-100);
-	return (res);
+	log_fd = open("log", O_CREAT | O_RDWR, 0644);
+	dprintf(log_fd, "%d\n", pid);
+	close(log_fd);
 }
 
-void	handle_error(volatile sig_atomic_t pid, volatile sig_atomic_t ssi_pid)
+void check_client_pid(pid_t pid, pid_t tpid)
 {
-	if (pid <= 0)
-		exit (201);
-	if (pid != ssi_pid)
+	if (pid != tpid)
 	{
-		kill(pid, SIGUSR2);
-		kill(ssi_pid, SIGUSR2);
-		exit(127);
+		save_kill(pid, SIGUSR2);		
+		save_kill(tpid, SIGUSR2);
+		exit (PID_ERROR);
 	}
 }
 
-void	action(int sig, siginfo_t *info, void *context)
+unsigned char receive_bit(pid_t *pid)
 {
-	static volatile sig_atomic_t	pid = -1;
-	static volatile sig_atomic_t	bitnum = 0;
-	static volatile sig_atomic_t	uchar = 0;
+	size_t	i;
+	int		sig;
+	pid_t	tpid;
 
-	g_ack = 1;
-	if (pid == -1)
-		pid = info->si_pid;
-	handle_error(pid, info->si_pid);
-	bitnum++;
-	uchar >>= 1;
-	uchar |= 128 * (sig == SIGUSR1);
-	if (bitnum == 8)
+	sig = g_data.sig;
+	tpid = g_data.pid;
+	while (*pid == -1)
 	{
-		if (uchar == 0)
+		*pid = g_data.pid;
+		tpid = *pid;
+		sig = g_data.sig; 
+		usleep(TIMEOUT_TIME);
+	}
+	i = 0;
+	while (sig == 0 && i < TIMEOUT_COUNT)
+	{
+		tpid = g_data.pid;
+		sig = g_data.sig;
+		usleep(TIMEOUT_TIME);
+		i++;
+	}
+	check_client_pid(*pid, tpid);
+	if (sig == 0)
+		exit(TIMEOUT_ERROR);
+	g_data.sig = 0;
+	save_kill(*pid, SIGUSR1);
+	return (sig);
+}
+
+unsigned char receive_byte(pid_t *pid)
+{
+	unsigned char	byte;
+	int				i;
+	int				bit;
+
+	i = 0;
+	byte = 0;
+	bit = 0;
+	while (i < 8)
+	{
+		byte >>= 1;
+		bit = receive_bit(pid);
+		byte |= 128 * (bit == SIGUSR1);
+		i++;
+	}
+	
+	return (byte);
+}
+
+void receive(void)
+{
+	static	pid_t	pid = -1;
+	unsigned char	byte;
+
+	while (1)
+	{
+		byte = receive_byte(&pid);
+		if (byte == 0)
 		{
-			if (kill(pid, SIGUSR1) == -1)
-				exit(127);
 			pid = -1;
-		}
-		ft_putchar((char)uchar);
-		bitnum = 0;
-		uchar = 0;
+			g_data.pid = -1;
+			g_data.sig = 0;
+		}	
+		else
+			ft_putchar(byte);
 	}
-	(void)context;
-	if (pid <= 0)
-		return ;
-	if (kill(pid, SIGUSR1) == -1)
-		exit(127);
-}
-
-int	ft_putnbr(long n)
-{
-	int	ans;
-
-	ans = 0;
-	if (n == 0)
-		return (ft_putchar('0'));
-	if (n < 0)
-	{
-		ans += ft_putchar('-');
-		n = -n;
-	}
-	if (n >= 10)
-		ans += ft_putnbr(n / 10);
-	ans += ft_putchar(n % 10 + '0');
-	return (ans);
 }
 
 int	main(void)
 {
-	const int			pid = getpid();
-	struct sigaction	sa;
-	size_t				i;
-	int					log_fd;
-
+	const pid_t			pid = getpid();
+	
+	g_data.pid = -1; 
+	g_data.sig = 0;
+	action_init();
 	ft_putnbr(pid);
-	log_fd = open("log", O_CREAT | O_RDWR, 0644);
-	dprintf(log_fd, "%d\n", pid);
-	close(log_fd);
-	sa.sa_flags = SA_RESTART | SA_SIGINFO;
-	sa.sa_sigaction = action;
-	sigemptyset(&sa.sa_mask);
-	sigaddset(&sa.sa_mask, SIGUSR1);
-	sigaddset(&sa.sa_mask, SIGUSR2);
-	sigaction(SIGUSR1, &sa, NULL);
-	sigaction(SIGUSR2, &sa, NULL);
-	while (1)
-	{
-		g_ack = 0;
-		i = 0;
-		while (g_ack == 0 && i < 100000)
-		{
-			usleep(100);
-			i++;
-		}
-		if (g_ack == 0)
-			exit(1);
-	}
+	ft_putchar('\n');
+	logger(pid);
+	receive();
 	return (0);
 }

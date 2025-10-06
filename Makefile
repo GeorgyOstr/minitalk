@@ -13,8 +13,8 @@
 NAME_CLIENT = client
 NAME_SERVER = server
 
-CLIENT_SRCS = client.c
-SERVER_SRCS = server.c
+CLIENT_SRCS = client.c utils.c
+SERVER_SRCS = server.c utils.c
 
 CLIENT_OBJS = $(CLIENT_SRCS:.c=.o)
 SERVER_OBJS = $(SERVER_SRCS:.c=.o)
