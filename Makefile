@@ -6,7 +6,7 @@
 #    By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/05 23:13:14 by gostroum          #+#    #+#              #
-#    Updated: 2025/10/07 18:28:07 by gostroum         ###   ########.fr        #
+#    Updated: 2025/10/07 18:41:00 by gostroum         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,4 +48,4 @@ bonus: all
 
 -include $(CLIENT_DEPS) $(SERVER_DEPS)
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus
