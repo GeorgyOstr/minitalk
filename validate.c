@@ -6,7 +6,7 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 16:23:55 by gostroum          #+#    #+#             */
-/*   Updated: 2025/10/07 16:33:49 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/10/07 19:34:15 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ static pid_t	pid_atoi(char *str)
 		ans = 10 * ans + (str[i] - '0');
 		i++;
 	}
+	if (!ans)
+		exit (ARGS_ERROR);
 	return (ans);
 }
 
