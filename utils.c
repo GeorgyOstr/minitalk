@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/07 12:08:56 by gostroum          #+#    #+#             */
+/*   Updated: 2025/10/07 12:09:02 by gostroum         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minitalk.h"
 
 extern t_sig_atomic_data	g_data;
@@ -31,7 +43,6 @@ int	ft_putnbr(long n)
 	ans += ft_putchar(n % 10 + '0');
 	return (ans);
 }
-
 
 void	save_kill(pid_t pid, int sig)
 {

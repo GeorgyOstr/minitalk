@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   client.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/07 12:06:46 by gostroum          #+#    #+#             */
+/*   Updated: 2025/10/07 12:06:49 by gostroum         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minitalk.h"
 
@@ -23,7 +34,6 @@ void	check_server_pid(pid_t	pid, pid_t data_pid)
 		exit (PID_ERROR);
 	}
 }
-#include <stdio.h>
 
 void	sendbit(unsigned char a)
 {
@@ -40,10 +50,7 @@ void	sendbit(unsigned char a)
 		save_kill(pid, SIGUSR2);
 	i = 0;
 	while (g_data.sig == 0 && i < TIMEOUT_COUNT)
-	{
-		usleep(TIMEOUT_TIME);
 		i++;
-	}
 	if (g_data.sig == SIGUSR2)
 		exit (0);
 	if (g_data.sig == 0)
