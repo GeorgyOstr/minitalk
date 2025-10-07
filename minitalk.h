@@ -6,7 +6,7 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 15:46:20 by gostroum          #+#    #+#             */
-/*   Updated: 2025/10/07 12:20:46 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/10/07 16:25:51 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,5 +40,6 @@ int		ft_putchar(char c);
 int		ft_putnbr(long n);
 void	save_kill(pid_t pid, int sig);
 void	action_init(void);
+pid_t	validate(int argc, char **argv);
 
 #endif

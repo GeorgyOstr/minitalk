@@ -6,14 +6,14 @@
 #    By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/05 23:13:14 by gostroum          #+#    #+#              #
-#    Updated: 2025/10/05 23:13:18 by gostroum         ###   ########.fr        #
+#    Updated: 2025/10/07 16:27:05 by gostroum         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME_CLIENT = client
 NAME_SERVER = server
 
-CLIENT_SRCS = client.c utils.c
+CLIENT_SRCS = client.c utils.c validate.c
 SERVER_SRCS = server.c utils.c
 
 CLIENT_OBJS = $(CLIENT_SRCS:.c=.o)

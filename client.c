@@ -6,7 +6,7 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 12:06:46 by gostroum          #+#    #+#             */
-/*   Updated: 2025/10/07 12:06:49 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/10/07 16:32:26 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,28 +14,23 @@
 
 t_sig_atomic_data	g_data = {0};
 
-void	terminate_server(pid_t pid)
+static void	check_server_pid(pid_t pid, pid_t data_pid)
 {
 	int	i;
 
-	i = 0;
-	while (i < 16)
-	{
-		save_kill(pid, SIGUSR2);
-		i++;
-	}
-}
-
-void	check_server_pid(pid_t	pid, pid_t data_pid)
-{
 	if (pid != data_pid)
 	{
-		terminate_server(pid);
-		exit (PID_ERROR);
+		i = 0;
+		while (i < 16)
+		{
+			save_kill(pid, SIGUSR2);
+			i++;
+		}
+		exit(PID_ERROR);
 	}
 }
 
-void	sendbit(unsigned char a)
+static void	sendbit(unsigned char a)
 {
 	static pid_t	pid = -1;
 	size_t			i;
@@ -52,12 +47,12 @@ void	sendbit(unsigned char a)
 	while (g_data.sig == 0 && i < TIMEOUT_COUNT)
 		i++;
 	if (g_data.sig == SIGUSR2)
-		exit (0);
+		exit(0);
 	if (g_data.sig == 0)
-		exit (TIMEOUT_ERROR);
+		exit(TIMEOUT_ERROR);
 }
 
-void	sendchar(unsigned char a)
+static void	sendchar(unsigned char a)
 {
 	int	i;
 
@@ -70,7 +65,7 @@ void	sendchar(unsigned char a)
 	}
 }
 
-void	sendstr(char *str)
+static void	sendstr(char *str)
 {
 	int	i;
 
@@ -81,30 +76,6 @@ void	sendstr(char *str)
 		i++;
 	}
 	sendchar(0);
-}
-
-pid_t	pid_atoi(char *str)
-{
-	int		i;
-	long	ans;
-
-	i = 0;
-	ans = 0;
-	while (str[i])
-	{
-		if ('0' > str[i] || str[i] > '9')
-			exit (ATOI_ERROR);
-		ans = 10 * ans + (str[i] - '0');
-		i++;
-	}
-	return (ans);
-}
-
-pid_t	validate(int argc, char **argv)
-{
-	if (argc != 3)
-		exit (ARGS_ERROR);
-	return (pid_atoi(argv[1]));
 }
 
 int	main(int argc, char **argv)

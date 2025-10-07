@@ -6,7 +6,7 @@
 /*   By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 14:02:31 by gostroum          #+#    #+#             */
-/*   Updated: 2025/10/07 12:03:35 by gostroum         ###   ########.fr       */
+/*   Updated: 2025/10/07 16:28:35 by gostroum         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,7 @@
 
 t_sig_atomic_data	g_data = {0};
 
-#include <fcntl.h>
-#include <stdio.h>
-
-void	logger(pid_t pid)
-{
-	int	log_fd;
-
-	log_fd = open("log", O_CREAT | O_RDWR, 0644);
-	dprintf(log_fd, "%d\n", pid);
-	close(log_fd);
-}
-
-void	check_client_pid(pid_t pid, pid_t tpid)
+static void	check_client_pid(pid_t pid, pid_t tpid)
 {
 	if (pid != tpid)
 	{
@@ -36,7 +24,7 @@ void	check_client_pid(pid_t pid, pid_t tpid)
 	}
 }
 
-unsigned char	receive_bit(pid_t *pid)
+static unsigned char	receive_bit(pid_t *pid)
 {
 	size_t	i;
 	int		sig;
@@ -65,7 +53,7 @@ unsigned char	receive_bit(pid_t *pid)
 	return (sig);
 }
 
-unsigned char	receive_byte(pid_t *pid)
+static unsigned char	receive_byte(pid_t *pid)
 {
 	unsigned char	byte;
 	int				i;
@@ -84,7 +72,7 @@ unsigned char	receive_byte(pid_t *pid)
 	return (byte);
 }
 
-void	receive(void)
+static void	receive(void)
 {
 	static pid_t	pid = -1;
 	char			bytes[BUFFER];
@@ -120,7 +108,6 @@ int	main(void)
 	action_init();
 	ft_putnbr(pid);
 	ft_putchar('\n');
-	logger(pid);
 	receive();
 	return (0);
 }
