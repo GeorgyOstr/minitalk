@@ -6,7 +6,7 @@
 #    By: gostroum <gostroum@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/10/05 23:13:14 by gostroum          #+#    #+#              #
-#    Updated: 2025/10/07 16:27:05 by gostroum         ###   ########.fr        #
+#    Updated: 2025/10/07 18:28:07 by gostroum         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,6 +43,8 @@ fclean: clean
 	$(RM) $(NAME_CLIENT) $(NAME_SERVER)
 
 re: fclean all
+
+bonus: all
 
 -include $(CLIENT_DEPS) $(SERVER_DEPS)
 
