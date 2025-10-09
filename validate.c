@@ -19,7 +19,7 @@ static pid_t	pid_atoi(char *str)
 
 	i = 0;
 	ans = 0;
-	while (str[i])
+	while (str[i] && i < 20)
 	{
 		if ('0' > str[i] || str[i] > '9')
 			exit (ATOI_ERROR);

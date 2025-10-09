@@ -16,7 +16,7 @@ t_sig_atomic_data	g_data = {0};
 
 static void	check_server_pid(pid_t pid, pid_t data_pid)
 {
-	int	i;
+	char	i;
 
 	if (pid != data_pid)
 	{
@@ -54,7 +54,7 @@ static void	sendbit(unsigned char a)
 
 static void	sendchar(unsigned char a)
 {
-	int	i;
+	char	i;
 
 	i = 0;
 	while (i < 8)
@@ -67,7 +67,7 @@ static void	sendchar(unsigned char a)
 
 static void	sendstr(char *str)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
 	while (str[i] != 0)

@@ -56,17 +56,17 @@ static unsigned char	receive_bit(pid_t *pid)
 static unsigned char	receive_byte(pid_t *pid)
 {
 	unsigned char	byte;
-	int				i;
-	int				bit;
+	char			i;
+	int				sig;
 
 	i = 0;
 	byte = 0;
-	bit = 0;
+	sig = 0;
 	while (i < 8)
 	{
 		byte >>= 1;
-		bit = receive_bit(pid);
-		byte |= 128 * (bit == SIGUSR1);
+		sig = receive_bit(pid);
+		byte |= 128 * (sig == SIGUSR1);
 		i++;
 	}
 	return (byte);
